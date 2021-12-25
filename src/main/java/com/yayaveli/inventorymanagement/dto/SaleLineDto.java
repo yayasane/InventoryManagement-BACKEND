@@ -14,6 +14,7 @@ public class SaleLineDto {
     private SaleDto saleDto;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
+    private Integer companyId;
 
     public static SaleLineDto fromEntity(SaleLine saleLine) {
         if (saleLine == null) {

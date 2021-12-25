@@ -14,6 +14,7 @@ public class SaleDto {
     private String saleCode;
     private Instant saleDate;
     private String commentary;
+    private Integer companyId;
 
     public static SaleDto fromEntity(Sale sale) {
         if (sale == null) {

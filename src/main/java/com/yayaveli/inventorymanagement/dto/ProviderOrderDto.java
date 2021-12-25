@@ -16,6 +16,7 @@ public class ProviderOrderDto {
     private String orderCode;
     private Instant orderDate;
     private ProviderDto providerDto;
+    private Integer companyId;
     @JsonIgnore
     private List<ProviderOrderLineDto> providerOrderLines;
 

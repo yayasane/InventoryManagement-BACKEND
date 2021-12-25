@@ -18,6 +18,7 @@ public class ProviderDto {
     private AddressDto addressDto;
     private String picture;
     private String phoneNumber;
+    private Integer companyId;
     @JsonIgnore
     private List<ProviderOrderDto> providerOrders;
 

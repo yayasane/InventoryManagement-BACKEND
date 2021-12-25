@@ -16,6 +16,7 @@ public class InventoryMovementDto {
     private Instant inventoryMovementDate;
     private BigDecimal quantity;
     private ItemDto item;
+    private Integer companyId;
     private InventoryMovementType inventoryMovementType;
 
     public static InventoryMovementDto fromEntity(InventoryMovement inventoryMovement) {

@@ -17,6 +17,7 @@ public class ClientDto {
     private AddressDto addressDto;
     private String picture;
     private String phoneNumber;
+    private Integer companyId;
     private List<ClientOrderDto> clientOrders;
 
     public static ClientDto fromEntity(Client client) {

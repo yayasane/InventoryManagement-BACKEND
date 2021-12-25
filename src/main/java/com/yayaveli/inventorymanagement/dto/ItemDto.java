@@ -17,6 +17,7 @@ public class ItemDto {
     private BigDecimal vat;
     private BigDecimal unitPriceInclT;
     private String picture;
+    private Integer companyId;
     private CategoryDto categoryDto;
 
     public static ItemDto fromEntity(Item item) {

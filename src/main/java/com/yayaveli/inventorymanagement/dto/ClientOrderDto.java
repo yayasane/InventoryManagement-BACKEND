@@ -16,6 +16,7 @@ public class ClientOrderDto {
     private String orderCode;
     private Instant orderDate;
     private ClientDto clientDto;
+    private Integer companyId;
     @JsonIgnore
     private List<ClientOrderLineDto> clientOrderLines;
 

@@ -15,6 +15,7 @@ public class ClientOrderLineDto {
     private ClientOrderDto clientOrderDto;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
+    private Integer companyId;
 
     public static ClientOrderLineDto fromEntity(ClientOrderLine clientOrderLine) {
         if (clientOrderLine == null) {
