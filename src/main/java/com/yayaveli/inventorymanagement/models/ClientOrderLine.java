@@ -22,4 +22,5 @@ public class ClientOrderLine extends AbstractEntity {
     private ClientOrder clientOrder;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
+    private Integer companyId;
 }

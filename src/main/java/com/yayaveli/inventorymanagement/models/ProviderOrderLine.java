@@ -22,4 +22,5 @@ public class ProviderOrderLine extends AbstractEntity {
     private ProviderOrder providerOrder;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
+    private Integer companyId;
 }

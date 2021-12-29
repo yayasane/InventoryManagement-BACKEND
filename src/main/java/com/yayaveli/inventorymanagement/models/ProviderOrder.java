@@ -20,6 +20,7 @@ public class ProviderOrder extends AbstractEntity {
     private String orderCode;
     private Instant orderDate;
     private Provider provider;
+    private Integer companyId;
     @OneToMany(mappedBy = "providerOrder")
     private List<ProviderOrderLine> providerOrderLines;
 }

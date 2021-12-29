@@ -25,5 +25,6 @@ public class InventoryMovement extends AbstractEntity {
     @ManyToOne
     private Item item;
     private InventoryMovementType inventoryMovementType;
+    private Integer companyId;
 
 }

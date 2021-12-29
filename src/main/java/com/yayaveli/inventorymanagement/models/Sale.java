@@ -18,5 +18,5 @@ public class Sale extends AbstractEntity {
     private String saleCode;
     private Instant saleDate;
     private String commentary;
-
+    private Integer companyId;
 }

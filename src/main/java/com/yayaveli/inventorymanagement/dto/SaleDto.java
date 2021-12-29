@@ -1,6 +1,7 @@
 package com.yayaveli.inventorymanagement.dto;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.yayaveli.inventorymanagement.models.Sale;
 
@@ -15,6 +16,7 @@ public class SaleDto {
     private Instant saleDate;
     private String commentary;
     private Integer companyId;
+    private List<SaleLineDto> saleLineDtos;
 
     public static SaleDto fromEntity(Sale sale) {
         if (sale == null) {
@@ -26,6 +28,7 @@ public class SaleDto {
                 .id(sale.getId())
                 .saleCode(sale.getSaleCode())
                 .saleDate(sale.getSaleDate())
+                .companyId(sale.getCompanyId())
                 .commentary(sale.getCommentary())
                 .build();
     };
@@ -40,6 +43,7 @@ public class SaleDto {
         sale.setId(sale.getId());
         sale.setSaleCode(sale.getSaleCode());
         sale.setSaleDate(sale.getSaleDate());
+        sale.setCompanyId(saleDto.getCompanyId());
         sale.setCommentary(sale.getCommentary());
 
         return sale;

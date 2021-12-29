@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.yayaveli.inventorymanagement.dto.InventoryMovementDto;
 
-public class InvetoryMovementValidator {
+public class InventoryMovementValidator {
     public static List<String> validate(InventoryMovementDto providerOrderLineDto) {
         List<String> errors = new ArrayList<>();
 

@@ -33,6 +33,7 @@ public class ClientDto {
                 .email(client.getEmail())
                 .phoneNumber(client.getPhoneNumber())
                 .picture(client.getPicture())
+                .companyId(client.getCompanyId())
                 .addressDto(AddressDto.fromEntity(client.getAddress()))
                 .build();
     };
@@ -50,6 +51,7 @@ public class ClientDto {
         client.setEmail(clientDto.getEmail());
         client.setPhoneNumber(clientDto.getPhoneNumber());
         client.setPicture(clientDto.getPicture());
+        client.setCompanyId(clientDto.getCompanyId());
         client.setAddress(AddressDto.toEntity(clientDto.getAddressDto()));
 
         return client;

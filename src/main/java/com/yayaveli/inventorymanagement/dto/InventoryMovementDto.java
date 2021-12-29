@@ -29,6 +29,7 @@ public class InventoryMovementDto {
                 .id(inventoryMovement.getId())
                 .inventoryMovementDate(inventoryMovement.getInventoryMovementDate())
                 .quantity(inventoryMovement.getQuantity())
+                .companyId(inventoryMovement.getCompanyId())
                 .item(ItemDto.fromEntity(inventoryMovement.getItem()))
                 .build();
 
@@ -45,6 +46,7 @@ public class InventoryMovementDto {
         inventoryMovement.setId(inventoryMovementDto.getId());
         inventoryMovement.setInventoryMovementDate(inventoryMovementDto.getInventoryMovementDate());
         inventoryMovement.setQuantity(inventoryMovementDto.getQuantity());
+        inventoryMovement.setCompanyId(inventoryMovementDto.getCompanyId());
         inventoryMovement.setItem(ItemDto.toEntity(inventoryMovementDto.getItem()));
 
         return inventoryMovement;

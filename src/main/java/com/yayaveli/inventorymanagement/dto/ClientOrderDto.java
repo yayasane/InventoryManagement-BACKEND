@@ -3,7 +3,6 @@ package com.yayaveli.inventorymanagement.dto;
 import java.time.Instant;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yayaveli.inventorymanagement.models.ClientOrder;
 
 import lombok.Builder;
@@ -17,7 +16,6 @@ public class ClientOrderDto {
     private Instant orderDate;
     private ClientDto clientDto;
     private Integer companyId;
-    @JsonIgnore
     private List<ClientOrderLineDto> clientOrderLines;
 
     public static ClientOrderDto fromEntity(ClientOrder clientOrder) {
@@ -30,6 +28,7 @@ public class ClientOrderDto {
                 .id(clientOrder.getId())
                 .orderCode(clientOrder.getOrderCode())
                 .orderDate(clientOrder.getOrderDate())
+                .companyId(clientOrder.getCompanyId())
                 .clientDto(ClientDto.fromEntity(clientOrder.getClient()))
                 .build();
 
@@ -45,6 +44,7 @@ public class ClientOrderDto {
         clientOrder.setId(clientOrderDto.getId());
         clientOrder.setOrderCode(clientOrderDto.getOrderCode());
         clientOrder.setOrderDate(clientOrderDto.getOrderDate());
+        clientOrder.setCompanyId(clientOrderDto.getCompanyId());
         clientOrder.setClient(ClientDto.toEntity(clientOrderDto.getClientDto()));
 
         return clientOrder;

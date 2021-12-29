@@ -35,6 +35,7 @@ public class ProviderDto {
                 .email(provider.getEmail())
                 .phoneNumber(provider.getPhoneNumber())
                 .picture(provider.getPicture())
+                .companyId(provider.getCompanyId())
                 .addressDto(AddressDto.fromEntity(provider.getAddress()))
                 .build();
     };
@@ -52,6 +53,7 @@ public class ProviderDto {
         provider.setEmail(providerDto.getEmail());
         provider.setPhoneNumber(providerDto.getPhoneNumber());
         provider.setPicture(providerDto.getPicture());
+        provider.setCompanyId(providerDto.getCompanyId());
         provider.setAddress(AddressDto.toEntity(providerDto.getAddressDto()));
 
         return provider;

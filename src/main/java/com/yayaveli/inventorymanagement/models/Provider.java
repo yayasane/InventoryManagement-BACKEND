@@ -24,6 +24,7 @@ public class Provider extends AbstractEntity {
     private Address address;
     private String picture;
     private String phoneNumber;
+    private Integer companyId;
     @OneToMany(mappedBy = "provider")
     private List<ProviderOrder> providerOrders;
 }

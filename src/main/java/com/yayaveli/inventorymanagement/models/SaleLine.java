@@ -20,4 +20,5 @@ public class SaleLine extends AbstractEntity {
     private Sale sale;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
+    private Integer companyId;
 }

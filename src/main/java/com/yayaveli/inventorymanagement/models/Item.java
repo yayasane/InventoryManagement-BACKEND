@@ -28,4 +28,5 @@ public class Item extends AbstractEntity {
     private String picture;
     @ManyToOne
     private Category category;
+    private Integer companyId;
 }

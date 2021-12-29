@@ -2,6 +2,7 @@ package com.yayaveli.inventorymanagement.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yayaveli.inventorymanagement.models.ProviderOrderLine;
 
 import lombok.Builder;
@@ -12,6 +13,7 @@ import lombok.Data;
 public class ProviderOrderLineDto {
     private Integer id;
     private ItemDto itemDto;
+    @JsonIgnore
     private ProviderOrderDto providerOrderDto;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
@@ -27,6 +29,7 @@ public class ProviderOrderLineDto {
                 .id(providerOrderLine.getId())
                 .itemDto(ItemDto.fromEntity(providerOrderLine.getItem()))
                 .providerOrderDto(ProviderOrderDto.fromEntity(providerOrderLine.getProviderOrder()))
+                .companyId(providerOrderLine.getCompanyId())
                 .quantity(providerOrderLine.getQuantity())
                 .build();
     };
@@ -42,6 +45,7 @@ public class ProviderOrderLineDto {
         providerOrderLine.setItem(ItemDto.toEntity(providerOrderLineDto.getItemDto()));
         providerOrderLine.setProviderOrder(ProviderOrderDto.toEntity(providerOrderLineDto.getProviderOrderDto()));
         providerOrderLine.setQuantity(providerOrderLineDto.getQuantity());
+        providerOrderLine.setCompanyId(providerOrderLineDto.getCompanyId());
 
         return providerOrderLine;
     };

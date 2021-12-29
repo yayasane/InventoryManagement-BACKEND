@@ -34,6 +34,7 @@ public class ItemDto {
                 .vat(item.getVat())
                 .unitPriceInclT(item.getUnitPriceInclT())
                 .picture(item.getPicture())
+                .companyId(item.getCompanyId())
                 .categoryDto(CategoryDto.fromEntity(item.getCategory()))
                 .build();
     };
@@ -52,6 +53,7 @@ public class ItemDto {
         item.setVat(itemDto.getVat());
         item.setUnitPriceInclT(itemDto.getUnitPriceInclT());
         item.setPicture(itemDto.getPicture());
+        item.setCompanyId(itemDto.getCompanyId());
         item.setCategory(CategoryDto.toEntity(itemDto.getCategoryDto()));
 
         return item;
