@@ -5,7 +5,7 @@ import java.util.List;
 import com.yayaveli.inventorymanagement.dto.ProviderOrderDto;
 
 public interface ProviderOrderService {
-    ProviderOrderDto save(ProviderOrderDto clientOrderDto);
+    ProviderOrderDto save(ProviderOrderDto providerOrderDto);
 
     ProviderOrderDto findById(Integer id);
 
@@ -13,5 +13,5 @@ public interface ProviderOrderService {
 
     List<ProviderOrderDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 }

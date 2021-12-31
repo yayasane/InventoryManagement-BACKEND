@@ -13,6 +13,6 @@ public interface ClientOrderService {
 
     List<ClientOrderDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 
 }

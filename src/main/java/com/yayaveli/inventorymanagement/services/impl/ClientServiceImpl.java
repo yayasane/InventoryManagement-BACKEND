@@ -59,7 +59,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("Client is null");
             return;

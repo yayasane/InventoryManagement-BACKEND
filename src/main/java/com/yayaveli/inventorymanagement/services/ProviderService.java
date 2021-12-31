@@ -11,5 +11,5 @@ public interface ProviderService {
 
     List<ProviderDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 }

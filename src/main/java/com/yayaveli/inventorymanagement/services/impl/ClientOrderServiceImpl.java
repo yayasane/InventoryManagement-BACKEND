@@ -150,7 +150,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("id is null");
             return;

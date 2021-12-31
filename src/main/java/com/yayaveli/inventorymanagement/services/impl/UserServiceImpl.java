@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("User is null");
             return;

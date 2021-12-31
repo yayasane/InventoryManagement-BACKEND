@@ -8,6 +8,8 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,11 +29,25 @@ public class AbstractEntity implements Serializable {
     private Integer id;
 
     @CreatedDate
-    @Column(nullable = false)
+
     private Instant createdAt;
 
     @LastModifiedDate
-    @JsonIgnore
+    @Column(nullable = false, updatable = false)
     private Instant updatedAt;
+
+    /*
+     * @PreUpdate
+     * void preUpdate() {
+     * updatedAt = Instant.now();
+     * }
+     */
+
+    /*
+     * @PrePersist
+     * void prePersist() {
+     * createdAt = Instant.now();
+     * }
+     */
 
 }

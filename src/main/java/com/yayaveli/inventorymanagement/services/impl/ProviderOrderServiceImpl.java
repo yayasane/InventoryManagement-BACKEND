@@ -36,7 +36,6 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     private ItemRepository itemRepository;
 
     @Autowired
-
     public ProviderOrderServiceImpl(ProviderOrderRepository providerOrderRepository,
             ProviderOrderLineRepository providerOrderLineRepository, ProviderRepository providerRepository,
             ItemRepository itemRepository) {
@@ -154,7 +153,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("id is null");
             return;

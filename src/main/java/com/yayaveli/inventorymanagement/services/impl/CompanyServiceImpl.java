@@ -75,7 +75,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("Company is null");
             return;

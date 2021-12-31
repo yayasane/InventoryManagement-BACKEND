@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.2</version>
+		<version>2.5.6</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.yayaveli</groupId>
@@ -58,6 +58,22 @@
 			<artifactId>flickr4java</artifactId>
 			<version>3.0.6</version>
 		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,6 +90,46 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+			<groupId>com.github.kongchen</groupId>
+			<artifactId>swagger-maven-plugin</artifactId>
+			<version>3.1.8</version>
+			<configuration>
+				<apiSources>
+					<apiSource>
+						<springmvc>true</springmvc>
+						<locations>
+							<location>com.yayaveli.inventorymanagement.controllers</location>
+						</locations>
+						<basePath>http://localhost:8080</basePath>
+						<info>
+							<title>Swagger Documentation of Inventory Management application</title>
+							<version>${project.version}</version>
+							<description
+                >Swagger Documentation of Inventory Management application</description>
+							<contact>
+								<email>yabadji2010@gmail.com</email>
+								<name>Yaya SANE</name>
+								<url>https://github.com/yayasane</url>
+							</contact>
+						</info>
+						<outputPath>${project.build.directory}</outputPath>
+						<outputFormats>json</outputFormats>
+						<swaggerApiReader
+              >com.github.kongchen.swagger.docgen.reader.SpringMvcApiReader</swaggerApiReader>
+						<swaggerDirectory>${project.build.directory}</swaggerDirectory>
+					</apiSource>
+				</apiSources>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>compile</phase>
+					<goals>
+						<goal>generate</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
 		</plugins>
 	</build>
 

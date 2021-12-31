@@ -11,5 +11,5 @@ public interface UserService {
 
     List<UserDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 }

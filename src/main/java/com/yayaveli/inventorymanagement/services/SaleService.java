@@ -13,6 +13,6 @@ public interface SaleService {
 
     List<SaleDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 
 }

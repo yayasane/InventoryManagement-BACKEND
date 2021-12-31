@@ -13,5 +13,5 @@ public interface CompanyService {
 
     List<CompanyDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 }
