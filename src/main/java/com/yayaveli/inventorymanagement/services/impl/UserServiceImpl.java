@@ -66,4 +66,10 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    @Override
+    public UserDto findByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserDto::fromEntity).orElseThrow(
+                () -> new EntityNotFoundException("Aucun utilisateur avec l'email fourni", ErrorCodes.USER_NOT_FOUND));
+    }
 }

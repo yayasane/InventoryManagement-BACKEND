@@ -1,19 +1,26 @@
 package com.yayaveli.inventorymanagement.services.impl;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.yayaveli.inventorymanagement.dto.CompanyDto;
+import com.yayaveli.inventorymanagement.dto.UserDto;
+import com.yayaveli.inventorymanagement.dto.UserRoleDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
 import com.yayaveli.inventorymanagement.exceptions.ErrorCodes;
 import com.yayaveli.inventorymanagement.exceptions.InvalidEntityException;
 import com.yayaveli.inventorymanagement.models.Company;
 import com.yayaveli.inventorymanagement.repositories.CompanyRepository;
+import com.yayaveli.inventorymanagement.repositories.UserRoleRepository;
 import com.yayaveli.inventorymanagement.services.CompanyService;
+import com.yayaveli.inventorymanagement.services.UserService;
 import com.yayaveli.inventorymanagement.validators.CompanyValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,7 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class CompanyServiceImpl implements CompanyService {
+    @Autowired
     private CompanyRepository companyRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     public CompanyServiceImpl(CompanyRepository companyRepository) {
@@ -36,7 +50,35 @@ public class CompanyServiceImpl implements CompanyService {
             log.error("Company i not valid {}", companyDto);
             throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.COMPANY_NOT_VALID, errors);
         }
-        return CompanyDto.fromEntity(companyRepository.save(CompanyDto.toEntity(companyDto)));
+        CompanyDto savedCompanyDto = CompanyDto.fromEntity(companyRepository.save(CompanyDto.toEntity(companyDto)));
+
+        UserDto userDto = fromCompany(savedCompanyDto);
+        UserDto saveUserDto = userService.save(userDto);
+
+        UserRoleDto userRoleDto = UserRoleDto.builder().roleName("ADMIN")
+                .userDto(saveUserDto)
+                .build();
+
+        userRoleRepository.save(UserRoleDto.toEntity(userRoleDto));
+
+        return savedCompanyDto;
+    }
+
+    private UserDto fromCompany(CompanyDto companyDto) {
+        return UserDto.builder()
+                .addressDto(companyDto.getAddressDto())
+                .firstName(companyDto.getName())
+                .lastName(companyDto.getTaxCode())
+                .email(companyDto.getEmail())
+                .password(generateRandomPassword())
+                .company(companyDto)
+                .dateOfBirth(new Date())
+                .picture(companyDto.getPicture())
+                .build();
+    }
+
+    private String generateRandomPassword() {
+        return null;
     }
 
     @Override

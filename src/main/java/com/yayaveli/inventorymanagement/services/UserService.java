@@ -9,6 +9,8 @@ public interface UserService {
 
     UserDto findById(Integer id);
 
+    UserDto findByEmail(String email);
+
     List<UserDto> findAll();
 
     void delete(Integer id);
