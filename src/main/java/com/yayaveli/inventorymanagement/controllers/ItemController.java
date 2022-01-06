@@ -54,7 +54,7 @@ public class ItemController implements ItemApi {
 
     @Override
     public void delete(Integer id) {
-        this.itemService.deleteInteger(id);
+        this.itemService.delete(id);
 
     }
 

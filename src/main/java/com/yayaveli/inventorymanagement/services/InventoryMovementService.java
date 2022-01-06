@@ -11,5 +11,5 @@ public interface InventoryMovementService {
 
     List<InventoryMovementDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 }

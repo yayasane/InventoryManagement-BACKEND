@@ -36,11 +36,11 @@ public class AddressDto {
 
         }
         Address address = new Address();
-        address.setAddress1(address.getAddress1());
-        address.setAddress2(address.getAddress2());
-        address.setCity(address.getCity());
-        address.setZipCode(address.getZipCode());
-        address.setCountry(address.getCountry());
+        address.setAddress1(addressDto.getAddress1());
+        address.setAddress2(addressDto.getAddress2());
+        address.setCity(addressDto.getCity());
+        address.setZipCode(addressDto.getZipCode());
+        address.setCountry(addressDto.getCountry());
 
         return address;
     };

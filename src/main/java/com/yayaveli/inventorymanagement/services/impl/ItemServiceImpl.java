@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.yayaveli.inventorymanagement.dto.ItemDto;
+import com.yayaveli.inventorymanagement.dto.UserDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
 import com.yayaveli.inventorymanagement.exceptions.ErrorCodes;
 import com.yayaveli.inventorymanagement.exceptions.InvalidEntityException;
@@ -33,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto save(ItemDto itemDto) {
         List<String> errors = ItemValidator.validate(itemDto);
         if (!errors.isEmpty()) {
-            log.error("Item i not valid {}", itemDto);
+            log.error("Item is not valid {}", itemDto, errors);
             throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.ITEM_NOT_VALID, errors);
         }
         return ItemDto.fromEntity(itemRepository.save(ItemDto.toEntity(itemDto)));
@@ -42,14 +43,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto findById(Integer id) {
         if (id == null) {
-            log.error("Item is null");
+            log.error("Item id is null");
             return null;
         }
-        Optional<Item> item = itemRepository.findById(id);
-
-        ItemDto itemDto = ItemDto.fromEntity(item.get());
-
-        return Optional.of(itemDto).orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
+        return itemRepository.findById(id).map(ItemDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
                 ErrorCodes.ITEM_NOT_FOUND));
     }
 
@@ -59,11 +57,7 @@ public class ItemServiceImpl implements ItemService {
             log.error("itemCode is null");
             return null;
         }
-        Optional<Item> item = itemRepository.findByItemCode(itemCode);
-
-        ItemDto itemDto = ItemDto.fromEntity(item.get());
-
-        return Optional.of(itemDto)
+        return itemRepository.findByItemCode(itemCode).map(ItemDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun article avec le code = " + itemCode,
                         ErrorCodes.ITEM_NOT_FOUND));
     }
@@ -74,10 +68,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
-            log.error("Item is null");
+            log.error("Item id is null");
             return;
+        }
+        if(!itemRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucun article avec l'id = " + id,
+                    ErrorCodes.ITEM_NOT_FOUND);
         }
         itemRepository.deleteById(id);
     }

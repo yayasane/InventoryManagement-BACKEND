@@ -1,11 +1,5 @@
 package com.yayaveli.inventorymanagement.services.impl;
 
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.yayaveli.inventorymanagement.dto.CompanyDto;
 import com.yayaveli.inventorymanagement.dto.UserDto;
 import com.yayaveli.inventorymanagement.dto.UserRoleDto;
@@ -18,16 +12,20 @@ import com.yayaveli.inventorymanagement.repositories.UserRoleRepository;
 import com.yayaveli.inventorymanagement.services.CompanyService;
 import com.yayaveli.inventorymanagement.services.UserService;
 import com.yayaveli.inventorymanagement.validators.CompanyValidator;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class CompanyServiceImpl implements CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
@@ -47,12 +45,13 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto save(CompanyDto companyDto) {
         List<String> errors = CompanyValidator.validate(companyDto);
         if (!errors.isEmpty()) {
-            log.error("Company i not valid {}", companyDto);
-            throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.COMPANY_NOT_VALID, errors);
+            log.error("Company is not valid {}", errors);
+            throw new InvalidEntityException("L'entreprise n'est pas valide", ErrorCodes.COMPANY_NOT_VALID, errors);
         }
         CompanyDto savedCompanyDto = CompanyDto.fromEntity(companyRepository.save(CompanyDto.toEntity(companyDto)));
+        log.info("--- Company DTO {}", companyDto);
 
-        UserDto userDto = fromCompany(savedCompanyDto);
+        UserDto userDto = fromCompany(companyDto);
         UserDto saveUserDto = userService.save(userDto);
 
         UserRoleDto userRoleDto = UserRoleDto.builder().roleName("ADMIN")
@@ -66,7 +65,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private UserDto fromCompany(CompanyDto companyDto) {
         return UserDto.builder()
-                .addressDto(companyDto.getAddressDto())
+                .addressDto(companyDto.getAddress())
                 .firstName(companyDto.getName())
                 .lastName(companyDto.getTaxCode())
                 .email(companyDto.getEmail())
@@ -78,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private String generateRandomPassword() {
-        return null;
+        return "password";
     }
 
     @Override
@@ -87,27 +86,20 @@ public class CompanyServiceImpl implements CompanyService {
             log.error("Company is null");
             return null;
         }
-        Optional<Company> company = companyRepository.findById(id);
 
-        CompanyDto companyDto = CompanyDto.fromEntity(company.get());
-
-        return Optional.of(companyDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
+        return companyRepository.findById(id).map(CompanyDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucune entreprise avec l'id = " + id,
                         ErrorCodes.COMPANY_NOT_FOUND));
     }
 
     @Override
-    public CompanyDto findByCompanyCode(String companyCode) {
-        if (!StringUtils.hasLength(companyCode)) {
+    public CompanyDto findByCompanyName(String companyName) {
+        if (!StringUtils.hasLength(companyName)) {
             log.error("companyCode is null");
             return null;
         }
-        Optional<Company> company = companyRepository.findByName(companyCode);
-
-        CompanyDto companyDto = CompanyDto.fromEntity(company.get());
-
-        return Optional.of(companyDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec le code = " + companyCode,
+        return companyRepository.findByName(companyName).map(CompanyDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucune entreprise avec le nom = " + companyName,
                         ErrorCodes.COMPANY_NOT_FOUND));
     }
 
@@ -119,8 +111,12 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public void delete(Integer id) {
         if (id == null) {
-            log.error("Company is null");
+            log.error("Company id is null");
             return;
+        }
+        if(!companyRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucune entreprise avec l'id = " + id,
+                    ErrorCodes.COMPANY_NOT_FOUND);
         }
         companyRepository.deleteById(id);
     }

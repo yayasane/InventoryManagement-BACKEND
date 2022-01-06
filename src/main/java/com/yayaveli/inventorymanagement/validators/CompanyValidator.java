@@ -32,19 +32,19 @@ public class CompanyValidator {
         if (!StringUtils.hasLength(companyDto.getDescription())) {
             errors.add("Veuillez renseigner la description de l'entreprise");
         }
-        if (companyDto.getAddressDto() == null) {
+        if (companyDto.getAddress() == null) {
             errors.add("Veuillez renseigner l'adresse de l'entreprise");
         } else {
-            if (!StringUtils.hasLength(companyDto.getAddressDto().getAddress1())) {
+            if (!StringUtils.hasLength(companyDto.getAddress().getAddress1())) {
                 errors.add("Le champs 'Adresse 1' est obligatoire");
             }
-            if (!StringUtils.hasLength(companyDto.getAddressDto().getCity())) {
+            if (!StringUtils.hasLength(companyDto.getAddress().getCity())) {
                 errors.add("Le champs 'Ville' est obligatoire");
             }
-            if (!StringUtils.hasLength(companyDto.getAddressDto().getZipCode())) {
+            if (!StringUtils.hasLength(companyDto.getAddress().getZipCode())) {
                 errors.add("Le champs 'Code Postale' est obligatoire");
             }
-            if (!StringUtils.hasLength(companyDto.getAddressDto().getCountry())) {
+            if (!StringUtils.hasLength(companyDto.getAddress().getCountry())) {
                 errors.add("Le champs 'Pays' est obligatoire");
             }
 

@@ -1,10 +1,5 @@
 package com.yayaveli.inventorymanagement.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.yayaveli.inventorymanagement.dto.SaleDto;
 import com.yayaveli.inventorymanagement.dto.SaleLineDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
@@ -13,30 +8,31 @@ import com.yayaveli.inventorymanagement.exceptions.InvalidEntityException;
 import com.yayaveli.inventorymanagement.models.Item;
 import com.yayaveli.inventorymanagement.models.Sale;
 import com.yayaveli.inventorymanagement.models.SaleLine;
-import com.yayaveli.inventorymanagement.repositories.ClientRepository;
 import com.yayaveli.inventorymanagement.repositories.ItemRepository;
 import com.yayaveli.inventorymanagement.repositories.SaleLineRepository;
 import com.yayaveli.inventorymanagement.repositories.SaleRepository;
 import com.yayaveli.inventorymanagement.services.SaleService;
 import com.yayaveli.inventorymanagement.validators.SaleValidator;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class SaleServiceImpl implements SaleService {
     private SaleRepository saleRepository;
     private SaleLineRepository saleLineRepository;
-    private ClientRepository clientRepository;
     private ItemRepository itemRepository;
 
     @Autowired
     public SaleServiceImpl(SaleRepository saleRepository,
-            SaleLineRepository saleLineRepository, ClientRepository clientRepository,
+            SaleLineRepository saleLineRepository,
             ItemRepository itemRepository) {
         this.saleRepository = saleRepository;
         this.saleLineRepository = saleLineRepository;
@@ -49,7 +45,7 @@ public class SaleServiceImpl implements SaleService {
         List<String> errors = SaleValidator.validate(saleDto);
         if (!errors.isEmpty()) {
             log.error("Sale is not valid {}", saleDto);
-            throw new InvalidEntityException("La vente client n'est pas valide", ErrorCodes.SALE_NOT_VALID,
+            throw new InvalidEntityException("La vente n'est pas valide", ErrorCodes.SALE_NOT_VALID,
                     errors);
         }
 
@@ -72,7 +68,7 @@ public class SaleServiceImpl implements SaleService {
             });
         }
 
-        if (itemErrors.isEmpty()) {
+        if (!itemErrors.isEmpty()) {
             log.warn("One or more items are not find in the DB, {}", itemErrors);
             throw new InvalidEntityException("Un ou plusieur articles n'ont pas été trouvés dans la base de données",
                     ErrorCodes.SALE_NOT_VALID,
@@ -109,11 +105,7 @@ public class SaleServiceImpl implements SaleService {
             log.error("Sale id is null");
             return null;
         }
-        Optional<Sale> sale = saleRepository.findById(id);
-
-        SaleDto saleDto = SaleDto.fromEntity(sale.get());
-
-        return Optional.of(saleDto)
+        return saleRepository.findById(id).map(SaleDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucune vente avec l'id = " + id,
                         ErrorCodes.SALE_NOT_FOUND));
     }
@@ -124,11 +116,7 @@ public class SaleServiceImpl implements SaleService {
             log.error("saleCode is null");
             return null;
         }
-        Optional<Sale> sale = saleRepository.findBySaleCode(saleCode);
-
-        SaleDto saleDto = SaleDto.fromEntity(sale.get());
-
-        return Optional.of(saleDto)
+        return saleRepository.findBySaleCode(saleCode).map(SaleDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucune vente avec le code = " + saleCode,
                         ErrorCodes.SALE_NOT_FOUND));
     }
@@ -143,6 +131,10 @@ public class SaleServiceImpl implements SaleService {
         if (id == null) {
             log.error("id is null");
             return;
+        }
+        if(!saleRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucune vente avec l'id = " + id,
+                    ErrorCodes.SALE_NOT_FOUND);
         }
         saleRepository.deleteById(id);
 

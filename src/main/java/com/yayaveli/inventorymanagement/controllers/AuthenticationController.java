@@ -31,14 +31,15 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        System.out.println(request);
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
-
+        System.out.println("----- After");
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLogin());
 
         final String jwt = jwtUtil.generateToken((ExtendedUser) userDetails);
 
-        return ResponseEntity.ok(AuthenticationResponse.builder().accessToken("dummy_access_token").build());
+        return ResponseEntity.ok(AuthenticationResponse.builder().accessToken(jwt).build());
     }
 
 }

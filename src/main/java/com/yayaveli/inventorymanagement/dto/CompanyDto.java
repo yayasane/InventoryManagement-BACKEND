@@ -14,7 +14,7 @@ public class CompanyDto {
     private Integer id;
     private String name;
     private String description;
-    private AddressDto addressDto;
+    private AddressDto address;
     private String taxCode;
     private String picture;
     private String email;
@@ -30,13 +30,14 @@ public class CompanyDto {
 
         }
         return CompanyDto.builder()
+                .id(company.getId())
                 .name(company.getName())
                 .description(company.getDescription())
                 .taxCode(company.getTaxCode())
                 .picture(company.getPicture())
                 .email(company.getEmail())
                 .phoneNumber(company.getPhoneNumber())
-                .addressDto(AddressDto.fromEntity(company.getAddress()))
+                .address(AddressDto.fromEntity(company.getAddress()))
                 .webSite(company.getWebSite())
                 .build();
     };
@@ -48,13 +49,14 @@ public class CompanyDto {
 
         }
         Company company = new Company();
+        company.setId(companyDto.getId());
         company.setName(companyDto.getName());
         company.setDescription(companyDto.getDescription());
         company.setTaxCode(companyDto.getTaxCode());
         company.setPicture(companyDto.getPicture());
         company.setEmail(companyDto.getEmail());
         company.setPhoneNumber(companyDto.getPhoneNumber());
-        company.setAddress(AddressDto.toEntity(companyDto.getAddressDto()));
+        company.setAddress(AddressDto.toEntity(companyDto.getAddress()));
         company.setWebSite(companyDto.getWebSite());
 
         return company;

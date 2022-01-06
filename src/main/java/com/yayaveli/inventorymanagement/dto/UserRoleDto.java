@@ -21,7 +21,6 @@ public class UserRoleDto {
         return UserRoleDto.builder()
                 .id(userRole.getId())
                 .roleName(userRole.getRoleName())
-                .userDto(UserDto.fromEntity(userRole.getUser()))
                 .build();
     };
 

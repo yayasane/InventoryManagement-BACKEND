@@ -25,10 +25,10 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public String extractCompanyId(String token) {
+    public Integer extractCompanyId(String token) {
         final Claims claims = extractAllClaims(token);
 
-        return claims.get("companyId", String.class);
+        return claims.get("companyId", Integer.class);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

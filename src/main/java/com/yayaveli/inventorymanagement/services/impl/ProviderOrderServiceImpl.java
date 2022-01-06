@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.yayaveli.inventorymanagement.dto.ClientOrderDto;
 import com.yayaveli.inventorymanagement.dto.ProviderOrderDto;
 import com.yayaveli.inventorymanagement.dto.ProviderOrderLineDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
@@ -85,7 +86,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             });
         }
 
-        if (itemErrors.isEmpty()) {
+        if (!itemErrors.isEmpty()) {
             log.warn("");
             throw new InvalidEntityException("Article n'existe dans la base de données", ErrorCodes.ITEM_NOT_FOUND,
                     itemErrors);
@@ -122,11 +123,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             log.error("Order id is null");
             return null;
         }
-        Optional<ProviderOrder> providerOrder = providerOrderRepository.findById(id);
-
-        ProviderOrderDto providerOrderDto = ProviderOrderDto.fromEntity(providerOrder.get());
-
-        return Optional.of(providerOrderDto)
+        return providerOrderRepository.findById(id).map(ProviderOrderDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucune commande avec l'id = " + id,
                         ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
     }
@@ -137,11 +134,7 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
             log.error("orderCode is null");
             return null;
         }
-        Optional<ProviderOrder> providerOrder = providerOrderRepository.findByOrderCode(orderCode);
-
-        ProviderOrderDto providerOrderDto = ProviderOrderDto.fromEntity(providerOrder.get());
-
-        return Optional.of(providerOrderDto)
+        return providerOrderRepository.findByOrderCode(orderCode).map(ProviderOrderDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucune commande avec le code = " + orderCode,
                         ErrorCodes.PROVIDER_ORDER_NOT_FOUND));
     }
@@ -157,6 +150,10 @@ public class ProviderOrderServiceImpl implements ProviderOrderService {
         if (id == null) {
             log.error("id is null");
             return;
+        }
+        if(!providerOrderRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucune commande avec l'id = " + id,
+                    ErrorCodes.PROVIDER_NOT_FOUND);
         }
         providerOrderRepository.deleteById(id);
 

@@ -13,6 +13,6 @@ public interface ItemService {
 
     List<ItemDto> findAll();
 
-    void deleteInteger(Integer id);
+    void delete(Integer id);
 
 }

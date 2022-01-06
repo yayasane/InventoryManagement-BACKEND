@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.yayaveli.inventorymanagement.dto.ClientDto;
 import com.yayaveli.inventorymanagement.dto.InventoryMovementDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
 import com.yayaveli.inventorymanagement.exceptions.ErrorCodes;
@@ -34,7 +35,7 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
         List<String> errors = InventoryMovementValidator.validate(inventoryMovementDto);
         if (!errors.isEmpty()) {
             log.error("InventoryMovement is not valid {}", inventoryMovementDto);
-            throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.INVENTORY_MOVEMENT_NOT_VALID,
+            throw new InvalidEntityException("Le mouvement de stock n'est pas valide", ErrorCodes.INVENTORY_MOVEMENT_NOT_VALID,
                     errors);
         }
         return InventoryMovementDto
@@ -47,11 +48,7 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
             log.error("InventoryMovement id is null");
             return null;
         }
-        Optional<InventoryMovement> inventoryMovement = inventoryMovementRepository.findById(id);
-
-        InventoryMovementDto inventoryMovementDto = InventoryMovementDto.fromEntity(inventoryMovement.get());
-
-        return Optional.of(inventoryMovementDto)
+        return inventoryMovementRepository.findById(id).map(InventoryMovementDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun mouvement de stock avec l'id = " + id,
                         ErrorCodes.INVENTORY_MOVEMENT_NOT_FOUND));
     }
@@ -63,10 +60,14 @@ public class InventoryMovementServiceImpl implements InventoryMovementService {
     }
 
     @Override
-    public void deleteInteger(Integer id) {
+    public void delete(Integer id) {
         if (id == null) {
             log.error("InventoryMovement is is null");
             return;
+        }
+        if(!inventoryMovementRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucun mouvement de stock avec l'id = " + id,
+                    ErrorCodes.INVENTORY_MOVEMENT_NOT_FOUND);
         }
         inventoryMovementRepository.deleteById(id);
     }

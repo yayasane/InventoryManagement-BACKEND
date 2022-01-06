@@ -9,7 +9,7 @@ public interface CompanyService {
 
     CompanyDto findById(Integer id);
 
-    CompanyDto findByCompanyCode(String companyCode);
+    CompanyDto findByCompanyName(String companyCode);
 
     List<CompanyDto> findAll();
 

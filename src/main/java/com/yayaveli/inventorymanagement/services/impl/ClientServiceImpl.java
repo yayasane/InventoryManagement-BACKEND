@@ -32,7 +32,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientDto save(ClientDto clientDto) {
         List<String> errors = ClientValidator.validate(clientDto);
         if (!errors.isEmpty()) {
-            log.error("Client i not valid {}", clientDto);
+            log.error("Client is not valid {}", clientDto);
             throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.CLIENT_NOT_VALID, errors);
         }
         return ClientDto.fromEntity(clientRepository.save(ClientDto.toEntity(clientDto)));
@@ -41,14 +41,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ClientDto findById(Integer id) {
         if (id == null) {
-            log.error("Client is null");
+            log.error("Client id is null");
             return null;
         }
-        Optional<Client> client = clientRepository.findById(id);
 
-        ClientDto clientDto = ClientDto.fromEntity(client.get());
-
-        return Optional.of(clientDto)
+        return clientRepository.findById(id).map(ClientDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
                         ErrorCodes.CLIENT_NOT_FOUND));
     }
@@ -61,8 +58,12 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void delete(Integer id) {
         if (id == null) {
-            log.error("Client is null");
+            log.error("Client id is null");
             return;
+        }
+        if(!clientRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucun client avec l'id = " + id,
+                    ErrorCodes.CLIENT_NOT_FOUND);
         }
         clientRepository.deleteById(id);
     }

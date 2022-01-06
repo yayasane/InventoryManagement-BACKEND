@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.yayaveli.inventorymanagement.dto.CategoryDto;
 import com.yayaveli.inventorymanagement.dto.ClientOrderDto;
 import com.yayaveli.inventorymanagement.dto.ClientOrderLineDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
@@ -51,7 +52,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
         // Validation du commande client
         List<String> errors = ClientOrderValidator.validate(clientOrderDto);
         if (!errors.isEmpty()) {
-            log.error("Category i not valid {}", clientOrderDto);
+            log.error("ClientOrder is not valid {}", clientOrderDto);
             throw new InvalidEntityException("La commande client n'est pas valide", ErrorCodes.CLIENT_ORDER_NOT_VALID,
                     errors);
         }
@@ -84,7 +85,7 @@ public class ClientOrderServiceImpl implements ClientOrderService {
             });
         }
 
-        if (itemErrors.isEmpty()) {
+        if (!itemErrors.isEmpty()) {
             log.warn("");
             throw new InvalidEntityException("Article n'existe dans la base de données", ErrorCodes.ITEM_NOT_FOUND,
                     itemErrors);
@@ -120,13 +121,9 @@ public class ClientOrderServiceImpl implements ClientOrderService {
             log.error("Order id is null");
             return null;
         }
-        Optional<ClientOrder> clientOrder = clientOrderRepository.findById(id);
 
-        ClientOrderDto clientOrderDto = ClientOrderDto.fromEntity(clientOrder.get());
-
-        return Optional.of(clientOrderDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucune commande avec l'id = " + id,
-                        ErrorCodes.CLIENT_ORDER_NOT_FOUND));
+        return clientOrderRepository.findById(id).map(ClientOrderDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucune commande avec l'id = " + id,ErrorCodes.CLIENT_ORDER_NOT_FOUND));
     }
 
     @Override
@@ -135,11 +132,8 @@ public class ClientOrderServiceImpl implements ClientOrderService {
             log.error("orderCode is null");
             return null;
         }
-        Optional<ClientOrder> clientOrder = clientOrderRepository.findByOrderCode(orderCode);
 
-        ClientOrderDto clientOrderDto = ClientOrderDto.fromEntity(clientOrder.get());
-
-        return Optional.of(clientOrderDto)
+        return clientOrderRepository.findByOrderCode(orderCode).map(ClientOrderDto::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Aucune commande avec le code = " + orderCode,
                         ErrorCodes.CLIENT_ORDER_NOT_FOUND));
     }
@@ -154,6 +148,10 @@ public class ClientOrderServiceImpl implements ClientOrderService {
         if (id == null) {
             log.error("id is null");
             return;
+        }
+        if(!clientOrderRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucune commande avec l'id = " + id,
+                    ErrorCodes.CLIENT_ORDER_NOT_FOUND);
         }
         clientOrderRepository.deleteById(id);
 

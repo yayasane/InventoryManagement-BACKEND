@@ -20,7 +20,7 @@ spring:
                 ejb:
                     interceptor: com.yayaveli.inventorymanagement.interceptors.Interceptor
 server:
-    port: 8080
+    port: 8088
 
 flickr:
     apiKey: 361872305c86966dba35cec4ec875b9b

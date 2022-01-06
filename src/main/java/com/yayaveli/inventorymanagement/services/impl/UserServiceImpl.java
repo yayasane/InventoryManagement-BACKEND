@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
+import com.yayaveli.inventorymanagement.dto.ClientDto;
 import com.yayaveli.inventorymanagement.dto.UserDto;
 import com.yayaveli.inventorymanagement.exceptions.EntityNotFoundException;
 import com.yayaveli.inventorymanagement.exceptions.ErrorCodes;
@@ -13,18 +16,20 @@ import com.yayaveli.inventorymanagement.repositories.UserRepository;
 import com.yayaveli.inventorymanagement.services.UserService;
 import com.yayaveli.inventorymanagement.validators.UserValidator;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -32,9 +37,10 @@ public class UserServiceImpl implements UserService {
     public UserDto save(UserDto userDto) {
         List<String> errors = UserValidator.validate(userDto);
         if (!errors.isEmpty()) {
-            log.error("User i not valid {}", userDto);
-            throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.USER_NOT_VALID, errors);
+            log.error("User is not valid {}", errors);
+            throw new InvalidEntityException("L'utilisateur n'est pas valide", ErrorCodes.USER_NOT_VALID, errors);
         }
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         return UserDto.fromEntity(userRepository.save(UserDto.toEntity(userDto)));
     }
 
@@ -44,12 +50,8 @@ public class UserServiceImpl implements UserService {
             log.error("User is null");
             return null;
         }
-        Optional<User> user = userRepository.findById(id);
-
-        UserDto userDto = UserDto.fromEntity(user.get());
-
-        return Optional.of(userDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
+        return userRepository.findById(id).map(UserDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucun utilisateur avec l'id = " + id,
                         ErrorCodes.USER_NOT_FOUND));
     }
 
@@ -61,15 +63,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer id) {
         if (id == null) {
-            log.error("User is null");
+            log.error("User id is null");
             return;
+        }
+        if(!userRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucun utilisateur avec l'id = " + id,
+                    ErrorCodes.USER_NOT_FOUND);
         }
         userRepository.deleteById(id);
     }
 
     @Override
     public UserDto findByEmail(String email) {
+        System.err.println(email + "-------------");
         return userRepository.findByEmail(email).map(UserDto::fromEntity).orElseThrow(
-                () -> new EntityNotFoundException("Aucun utilisateur avec l'email fourni", ErrorCodes.USER_NOT_FOUND));
+                () -> new EntityNotFoundException("Aucun utilisateur avec l'eamil= " + email, ErrorCodes.USER_NOT_FOUND));
     }
 }

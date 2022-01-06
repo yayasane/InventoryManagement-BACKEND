@@ -1,6 +1,7 @@
 package com.yayaveli.inventorymanagement.dto;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.yayaveli.inventorymanagement.models.ClientOrder;
@@ -30,6 +31,7 @@ public class ClientOrderDto {
                 .orderDate(clientOrder.getOrderDate())
                 .companyId(clientOrder.getCompanyId())
                 .clientDto(ClientDto.fromEntity(clientOrder.getClient()))
+                .clientOrderLines(new ArrayList<>())
                 .build();
 
     };

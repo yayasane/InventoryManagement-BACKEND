@@ -26,6 +26,7 @@ public class ApplicationRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
     private ApplicationUserDetailsService applicationUserDetailsService;
 
     @Override
@@ -35,12 +36,13 @@ public class ApplicationRequestFilter extends OncePerRequestFilter {
 
         String userEmail = null;
         String jwt = null;
-        String companyId = null;
+        Integer companyId = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             userEmail = jwtUtil.extractUsername(jwt);
             companyId = jwtUtil.extractCompanyId(jwt);
+            System.out.println("userEmail -------" + userEmail);
         }
 
         if (StringUtils.hasLength(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {

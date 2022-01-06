@@ -23,6 +23,7 @@ public class ClientOrder extends AbstractEntity {
     @ManyToOne
     private Client client;
     private Integer companyId;
+    private String orderState;
     @OneToMany(mappedBy = "clientOrder")
     private List<ClientOrderLine> clientOrderLines;
 }

@@ -33,8 +33,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto save(CategoryDto categoryDto) {
         List<String> errors = CategoryValidator.validate(categoryDto);
         if (!errors.isEmpty()) {
-            log.error("Category i not valid {}", categoryDto);
-            throw new InvalidEntityException("L'artcle n'est pas valide", ErrorCodes.CATEGORY_NOT_VALID, errors);
+            System.out.println(errors);
+            System.out.println(ErrorCodes.CATEGORY_NOT_VALID);
+            log.error("Category not valid {}", categoryDto);
+            throw new InvalidEntityException("La catégorie n'est pas valide", ErrorCodes.CATEGORY_NOT_VALID, errors);
         }
         return CategoryDto.fromEntity(categoryRepository.save(CategoryDto.toEntity(categoryDto)));
     }
@@ -42,16 +44,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findById(Integer id) {
         if (id == null) {
-            log.error("Category is null");
+            log.error("Category id is null");
             return null;
         }
-        Optional<Category> category = categoryRepository.findById(id);
-
-        CategoryDto categoryDto = CategoryDto.fromEntity(category.get());
-
-        return Optional.of(categoryDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec l'id = " + id,
-                        ErrorCodes.CLIENT_NOT_FOUND));
+        return categoryRepository.findById(id).map(CategoryDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucune catégorie avec l'id = " + id,
+                        ErrorCodes.CATEGORY_NOT_FOUND));
     }
 
     @Override
@@ -60,13 +58,9 @@ public class CategoryServiceImpl implements CategoryService {
             log.error("categoryCode is null");
             return null;
         }
-        Optional<Category> category = categoryRepository.findByCategoryCode(categoryCode);
-
-        CategoryDto categoryDto = CategoryDto.fromEntity(category.get());
-
-        return Optional.of(categoryDto)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun article avec le code = " + categoryCode,
-                        ErrorCodes.ITEM_NOT_FOUND));
+        return categoryRepository.findByCategoryCode(categoryCode).map(CategoryDto::fromEntity)
+                .orElseThrow(() -> new EntityNotFoundException("Aucune catégorie avec le code = " + categoryCode,
+                        ErrorCodes.CATEGORY_NOT_FOUND));
     }
 
     @Override
@@ -79,6 +73,10 @@ public class CategoryServiceImpl implements CategoryService {
         if (id == null) {
             log.error("Category is null");
             return;
+        }
+        if(!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Aucune catégorie avec l'id = " + id,
+                    ErrorCodes.CATEGORY_NOT_FOUND);
         }
         categoryRepository.deleteById(id);
     }
