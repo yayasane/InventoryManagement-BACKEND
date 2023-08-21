@@ -19,9 +19,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorDto> handleException(EntityNotFoundException exception, WebRequest webRequest) {
-        final HttpStatus notFound = HttpStatus.BAD_REQUEST;
+        final HttpStatus notFound = HttpStatus.NOT_FOUND;
         final ErrorDto errorDto = ErrorDto.builder()
-                .code(exception.getErrorCode())
+                .code(exception.getErrorCode().getCode())
                 .httpCode(notFound.value())
                 .message(exception.getMessage())
                 .build();
@@ -31,9 +31,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidEntityException.class)
     public ResponseEntity<ErrorDto> handleException(InvalidEntityException exception, WebRequest webRequest) {
-        final HttpStatus badRequest = HttpStatus.NOT_FOUND;
+        final HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         final ErrorDto errorDto = ErrorDto.builder()
-                .code(exception.getErrorCode())
+                .code(exception.getErrorCode().getCode())
                 .httpCode(badRequest.value())
                 .message(exception.getMessage())
                 .errors(exception.getErrors())
@@ -46,7 +46,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDto> handleException(BadCredentialsException exception, WebRequest webRequest) {
         final HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         final ErrorDto errorDto = ErrorDto.builder()
-                .code(ErrorCodes.BAD_CREDENTIALS)
+                .code(ErrorCodes.BAD_CREDENTIALS.getCode())
                 .httpCode(badRequest.value())
                 .message(exception.getMessage())
                 .errors(Collections.singletonList("Login et / ou mot de passe incorrecte"))

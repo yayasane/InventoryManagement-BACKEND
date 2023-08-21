@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ErrorDto {
     private Integer httpCode;
 
-    private ErrorCodes code;
+    private int code;
     private String message;
     private List<String> errors = new ArrayList<>();
 }
